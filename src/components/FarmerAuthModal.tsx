@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { X, User, Lock, Mail, Phone, Sprout, ShieldCheck, Loader2 } from 'lucide-react';
+import { X, User, Lock, Mail, Phone, Sprout, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 
 interface FarmerAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccessAuth?: () => void;
 }
 
-export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClose }) => {
+export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClose, onSuccessAuth }) => {
   const { signIn, signUp, isSupabaseActive } = useAuth();
   const { t } = useLanguage();
 
@@ -24,6 +25,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [emailConfirmNotice, setEmailConfirmNotice] = useState(false);
 
   if (!isOpen) return null;
 
@@ -32,18 +34,22 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
     setLoading(true);
     setErrorMsg(null);
     setSuccessMsg(null);
+    setEmailConfirmNotice(false);
 
     try {
       if (mode === 'login') {
         const { error } = await signIn(email, password);
         if (error) {
-          setErrorMsg(error.message || t('auth_err_signin', 'Failed to sign in. Please check your credentials.', 'உள்நுழைவது தோல்வியடைந்தது.'));
+          setErrorMsg(error);
         } else {
           setSuccessMsg(t('auth_succ_signin', 'Successfully signed in!', 'வெற்றிகரமாக உள்நுழைந்தீர்கள்!'));
-          setTimeout(() => onClose(), 800);
+          setTimeout(() => {
+            onClose();
+            if (onSuccessAuth) onSuccessAuth();
+          }, 600);
         }
       } else {
-        const { error } = await signUp(email, password, {
+        const { error, requiresEmailConfirmation } = await signUp(email, password, {
           fullName,
           phoneNumber,
           district,
@@ -53,10 +59,22 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
         });
 
         if (error) {
-          setErrorMsg(error.message || t('auth_err_signup', 'Registration failed. Please try again.', 'பதிவு தோல்வியடைந்தது.'));
+          setErrorMsg(error);
+        } else if (requiresEmailConfirmation) {
+          setEmailConfirmNotice(true);
+          setSuccessMsg(
+            t(
+              'signup_confirm_msg',
+              'Registration initiated! Please check your email inbox to confirm your account before logging in.',
+              'பதிவு செய்யப்பட்டது! உள்நுழைவதற்கு முன் உங்கள் மின்னஞ்சலை சரிபார்க்கவும்.'
+            )
+          );
         } else {
           setSuccessMsg(t('auth_succ_signup', 'Account created successfully! Session saved.', 'கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது!'));
-          setTimeout(() => onClose(), 1000);
+          setTimeout(() => {
+            onClose();
+            if (onSuccessAuth) onSuccessAuth();
+          }, 800);
         }
       }
     } catch (err: any) {
@@ -96,7 +114,11 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
         {/* Tab Switcher */}
         <div className="flex border-b border-gray-100 bg-gray-50/50 text-xs font-bold">
           <button
-            onClick={() => setMode('login')}
+            onClick={() => {
+              setMode('login');
+              setErrorMsg(null);
+              setSuccessMsg(null);
+            }}
             className={`flex-1 py-3 text-center transition-colors cursor-pointer ${
               mode === 'login'
                 ? 'border-b-2 border-[#143D2B] text-[#143D2B] bg-white'
@@ -106,7 +128,11 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
             {t('tab_signin', 'Sign In', 'உள்நுழைவு')}
           </button>
           <button
-            onClick={() => setMode('register')}
+            onClick={() => {
+              setMode('register');
+              setErrorMsg(null);
+              setSuccessMsg(null);
+            }}
             className={`flex-1 py-3 text-center transition-colors cursor-pointer ${
               mode === 'register'
                 ? 'border-b-2 border-[#143D2B] text-[#143D2B] bg-white'
@@ -120,14 +146,15 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-3 text-xs">
           {errorMsg && (
-            <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-medium">
-              {errorMsg}
+            <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl font-medium flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl font-medium flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl font-medium flex items-start gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
               <span>{successMsg}</span>
             </div>
           )}

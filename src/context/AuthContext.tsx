@@ -14,16 +14,21 @@ export interface FarmerProfile {
   createdAt?: string;
 }
 
+export interface AuthResult {
+  error: string | null;
+  requiresEmailConfirmation?: boolean;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: FarmerProfile | null;
   loading: boolean;
   isSupabaseActive: boolean;
-  signUp: (email: string, pass: string, profileData: Partial<FarmerProfile>) => Promise<{ error: any }>;
-  signIn: (email: string, pass: string) => Promise<{ error: any }>;
+  signUp: (email: string, pass: string, profileData: Partial<FarmerProfile>) => Promise<AuthResult>;
+  signIn: (email: string, pass: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
-  updateProfile: (profileData: Partial<FarmerProfile>) => Promise<{ error: any }>;
+  updateProfile: (profileData: Partial<FarmerProfile>) => Promise<AuthResult>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,7 +39,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<FarmerProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Check demo user in localStorage if Supabase is not configured
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) {
       const storedUser = localStorage.getItem('farmer_ai_demo_user');
@@ -56,7 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfile(session.user.id);
+        fetchProfile(session.user);
       } else {
         setLoading(false);
       }
@@ -66,7 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        await fetchProfile(session.user.id);
+        await fetchProfile(session.user);
       } else {
         setProfile(null);
         setLoading(false);
@@ -78,28 +82,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (currentUser: User) => {
     if (!supabase) return;
     try {
       const { data, error } = await supabase
         .from('farmer_profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('id', currentUser.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error);
-      } else if (data) {
+      if (!error && data) {
         setProfile({
           id: data.id,
           fullName: data.full_name,
           phoneNumber: data.phone_number,
           district: data.district,
           state: data.state,
-          preferredLanguage: data.preferred_language,
+          preferredLanguage: data.preferred_language || 'en',
           landAcreage: data.land_acreage,
           primaryCrops: data.primary_crops,
           createdAt: data.created_at,
+        });
+      } else {
+        // Fallback to user_metadata saved during signup if DB record is pending
+        const meta = currentUser.user_metadata || {};
+        setProfile({
+          id: currentUser.id,
+          fullName: meta.full_name || currentUser.email?.split('@')[0] || 'Farmer',
+          phoneNumber: meta.phone_number || '',
+          district: meta.district || 'Coimbatore',
+          state: meta.state || 'Tamil Nadu',
+          preferredLanguage: meta.preferred_language || 'en',
+          landAcreage: meta.land_acreage || 5,
+        });
+
+        // Ensure record exists in DB when session is active
+        await supabase.from('farmer_profiles').upsert({
+          id: currentUser.id,
+          full_name: meta.full_name || currentUser.email?.split('@')[0] || 'Farmer',
+          phone_number: meta.phone_number || '',
+          district: meta.district || 'Coimbatore',
+          state: meta.state || 'Tamil Nadu',
+          preferred_language: meta.preferred_language || 'en',
+          land_acreage: meta.land_acreage || 5,
         });
       }
     } catch (err) {
@@ -109,9 +134,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, pass: string, profileData: Partial<FarmerProfile>) => {
+  const signUp = async (email: string, pass: string, profileData: Partial<FarmerProfile>): Promise<AuthResult> => {
     if (!isSupabaseConfigured || !supabase) {
-      // Local demo fallback authentication mode
       const demoUser = {
         id: 'demo-farmer-' + Date.now(),
         email,
@@ -133,35 +157,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null };
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password: pass,
-    });
-
-    if (error) return { error };
-
-    if (data.user) {
-      const { error: profError } = await supabase.from('farmer_profiles').insert([
-        {
-          id: data.user.id,
-          full_name: profileData.fullName,
-          phone_number: profileData.phoneNumber,
-          district: profileData.district,
-          state: profileData.state,
-          preferred_language: profileData.preferredLanguage || 'en',
-          land_acreage: profileData.landAcreage || 0,
-          primary_crops: profileData.primaryCrops || [],
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password: pass,
+        options: {
+          data: {
+            full_name: profileData.fullName,
+            phone_number: profileData.phoneNumber,
+            district: profileData.district,
+            state: profileData.state,
+            land_acreage: profileData.landAcreage,
+            preferred_language: profileData.preferredLanguage || 'en',
+          },
         },
-      ]);
-      if (profError) {
-        console.error('Error inserting farmer profile:', profError);
-      }
-    }
+      });
 
-    return { error: null };
+      if (error) {
+        if (error.message.includes('rate limit')) {
+          return { error: 'Email send rate limit reached. Please check your inbox or try again shortly.' };
+        }
+        if (error.message.includes('already registered')) {
+          return { error: 'This email is already registered. Please sign in instead.' };
+        }
+        return { error: error.message };
+      }
+
+      if (data.user && !data.session) {
+        // Email confirmation is required by Supabase auth configuration
+        return { error: null, requiresEmailConfirmation: true };
+      }
+
+      if (data.user && data.session) {
+        // Email confirmation is disabled; session is active immediately
+        await fetchProfile(data.user);
+      }
+
+      return { error: null };
+    } catch (err: any) {
+      return { error: err.message || 'Registration failed. Please check network connection.' };
+    }
   };
 
-  const signIn = async (email: string, pass: string) => {
+  const signIn = async (email: string, pass: string): Promise<AuthResult> => {
     if (!isSupabaseConfigured || !supabase) {
       const demoUser = {
         id: 'demo-farmer-1',
@@ -183,11 +221,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null };
     }
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password: pass,
-    });
-    return { error };
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: pass,
+      });
+
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          return { error: 'Invalid email or password. If you recently registered, please confirm your email first.' };
+        }
+        if (error.message.includes('Email not confirmed')) {
+          return { error: 'Your email is not confirmed yet. Please check your inbox for the confirmation link.' };
+        }
+        return { error: error.message };
+      }
+
+      if (data.user) {
+        await fetchProfile(data.user);
+      }
+
+      return { error: null };
+    } catch (err: any) {
+      return { error: err.message || 'Failed to connect to authentication server.' };
+    }
   };
 
   const signOut = async () => {
@@ -201,7 +258,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProfile(null);
   };
 
-  const updateProfile = async (profileData: Partial<FarmerProfile>) => {
+  const updateProfile = async (profileData: Partial<FarmerProfile>): Promise<AuthResult> => {
     if (!user) return { error: 'No authenticated user' };
 
     if (!isSupabaseConfigured || !supabase) {
@@ -211,22 +268,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error: null };
     }
 
-    const { error } = await supabase.from('farmer_profiles').upsert({
-      id: user.id,
-      full_name: profileData.fullName,
-      phone_number: profileData.phoneNumber,
-      district: profileData.district,
-      state: profileData.state,
-      preferred_language: profileData.preferredLanguage,
-      land_acreage: profileData.landAcreage,
-      primary_crops: profileData.primaryCrops,
-      updated_at: new Date().toISOString(),
-    });
+    try {
+      const { error } = await supabase.from('farmer_profiles').upsert({
+        id: user.id,
+        full_name: profileData.fullName,
+        phone_number: profileData.phoneNumber,
+        district: profileData.district,
+        state: profileData.state,
+        preferred_language: profileData.preferredLanguage,
+        land_acreage: profileData.landAcreage,
+        primary_crops: profileData.primaryCrops,
+        updated_at: new Date().toISOString(),
+      });
 
-    if (!error) {
-      await fetchProfile(user.id);
+      if (!error) {
+        await fetchProfile(user);
+      }
+      return { error: error ? error.message : null };
+    } catch (err: any) {
+      return { error: err.message || 'Profile update failed.' };
     }
-    return { error };
   };
 
   return (

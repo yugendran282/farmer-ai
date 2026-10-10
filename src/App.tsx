@@ -164,6 +164,7 @@ const MainAppContent: React.FC = () => {
       <FarmerAuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
+        onSuccessAuth={() => setDashboardModalOpen(true)}
       />
 
       <FarmerDashboardModal
