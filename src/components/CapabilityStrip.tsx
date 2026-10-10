@@ -1,27 +1,30 @@
 import React from 'react';
 import { Sprout, TrendingUp, Store, Award } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const CapabilityStrip: React.FC = () => {
+  const { t } = useLanguage();
+
   const capabilities = [
     {
       icon: Sprout,
-      title: 'AI-Powered Crop Intelligence',
-      description: 'Regional demand forecasting, arrival trends, and price behavior patterns.',
+      title: t('cap_1_title', 'AI-Powered Crop Intelligence', 'AI பயிர் நுண்ணறிவு'),
+      description: t('cap_1_desc', 'Regional demand forecasting, arrival trends, and price behavior patterns.', 'மண்டல தேவை முன்னறிவிப்பு மற்றும் விலை மாற்றப் போக்குகள்.'),
     },
     {
       icon: TrendingUp,
-      title: 'Intelligent Selling Decisions',
-      description: 'Transparent net-return calculators comparing storage, transport, and offer timing.',
+      title: t('cap_2_title', 'Intelligent Selling Decisions', 'சிறந்த விற்பனை முடிவுகள்'),
+      description: t('cap_2_desc', 'Transparent net-return calculators comparing storage, transport, and offer timing.', 'சேமிப்பு, போக்குவரத்து மற்றும் விற்பனை நேரத்தை ஒப்பிடும் கணக்கீடு.'),
     },
     {
       icon: Store,
-      title: 'Local Buyer Connections',
-      description: 'Direct access to verified regional millers, wholesale traders, and food processors.',
+      title: t('cap_3_title', 'Local Buyer Connections', 'உள்ளூர் வாங்குபவர் தொடர்பு'),
+      description: t('cap_3_desc', 'Direct access to verified regional millers, wholesale traders, and food processors.', 'சரிபார்க்கப்பட்ட ஆலை உரிமையாளர்கள் மற்றும் மொத்த வியாபாரிகளுடன் நேரடி தொடர்பு.'),
     },
     {
       icon: Award,
-      title: 'Practice-Based Crop Rewards',
-      description: 'Document sustainable farm practices to qualify for participating buyer incentives.',
+      title: t('cap_4_title', 'Practice-Based Crop Rewards', 'இயற்கை விவசாய ஊக்கத்தொகை'),
+      description: t('cap_4_desc', 'Document sustainable farm practices to qualify for participating buyer incentives.', 'இயற்கை விவசாய முறைகளை பதிவு செய்து சிறப்பு ஊக்கத்தொகைகளைப் பெறுங்கள்.'),
     },
   ];
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ClipboardList, Bell, Plus, CheckCircle2, Trash2, Calendar, DollarSign, Sprout, Tag } from 'lucide-react';
+import { ClipboardList, Bell, Plus, CheckCircle2, Trash2 } from 'lucide-react';
 import { recordsService, FarmRecordItem, FarmingReminderItem } from '../services/recordsService';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -105,13 +105,17 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#143D2B]/10 text-[#143D2B] text-xs font-bold uppercase tracking-wider mb-4">
             <ClipboardList className="w-4 h-4 text-[#1B5E20]" />
-            <span>Farm Operational Management</span>
+            <span>{t('farm_ops_badge', 'Farm Operational Management', 'விவசாயப் பணி மேலாண்மை')}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#17251D] tracking-tight">
-            {t('records_title', 'Farm Management Records & Reminders')}
+            {t('records_title', 'Farm Management Records & Reminders', 'விவசாய பதிவுகள் & நினைவூட்டல்கள்')}
           </h2>
           <p className="mt-3 text-base text-[#17251D]/70">
-            {t('records_subtitle', 'Track your expenses, crop cycles, irrigation schedules, and task reminders.')}
+            {t(
+              'records_subtitle',
+              'Track your expenses, crop cycles, irrigation schedules, and task reminders.',
+              'உங்கள் செலவுகள், நீர் பாசன அட்டவணை மற்றும் விவசாயப் பணிகளைப் பதிவு செய்யவும்.'
+            )}
           </p>
         </div>
 
@@ -127,7 +131,9 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
               }`}
             >
               <ClipboardList className="w-4 h-4" />
-              <span>Farm Logs & Expense Records ({records.length})</span>
+              <span>
+                {t('tab_records', 'Farm Logs & Expense Records', 'செலவு மற்றும் வேலை பதிவுகள்')} ({records.length})
+              </span>
             </button>
             <button
               onClick={() => setActiveTab('reminders')}
@@ -138,7 +144,9 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
               }`}
             >
               <Bell className="w-4 h-4" />
-              <span>Reminders & Irrigation Schedule ({reminders.length})</span>
+              <span>
+                {t('tab_reminders', 'Reminders & Irrigation Schedule', 'நினைவூட்டல்கள் & பாசன அட்டவணை')} ({reminders.length})
+              </span>
             </button>
           </div>
         </div>
@@ -147,19 +155,21 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
         {activeTab === 'records' && (
           <div className="max-w-5xl mx-auto space-y-4">
             <div className="flex justify-between items-center bg-white p-4 rounded-2xl border border-gray-200">
-              <h3 className="text-sm font-bold text-[#143D2B]">Field Activity & Input Expense Logs</h3>
+              <h3 className="text-sm font-bold text-[#143D2B]">
+                {t('record_section_title', 'Field Activity & Input Expense Logs', 'நிலப் பணி மற்றும் செலவுப் பதிவுகள்')}
+              </h3>
               <button
                 onClick={() => setShowAddRecordModal(true)}
                 className="px-4 py-2 bg-[#143D2B] hover:bg-[#1B5E20] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <Plus className="w-4 h-4" />
-                <span>Add Farm Record</span>
+                <span>{t('btn_add_record', 'Add Farm Record', 'புதிய பதிவு சேர்க்க')}</span>
               </button>
             </div>
 
             {records.length === 0 ? (
               <div className="bg-white p-8 rounded-2xl border border-gray-200 text-center text-xs text-gray-500">
-                No farm records logged yet. Click "Add Farm Record" to log sowing, fertilizer costs, or harvest yields.
+                {t('no_records_msg', 'No farm records logged yet. Click "Add Farm Record" to log sowing, fertilizer costs, or harvest yields.', 'பதிவுகள் எதுவும் இல்லை. புதிய பதிவைச் சேர்க்க பட்டனை அழுத்தவும்.')}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -175,8 +185,8 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                       <p className="text-gray-500 font-semibold">{r.fieldName} • {r.recordDate}</p>
                       {r.notes && <p className="text-gray-700 bg-gray-50 p-2 rounded-lg text-[11px]">{r.notes}</p>}
                       <div className="flex gap-4 text-gray-600 font-medium pt-1">
-                        <span>Cost: <strong>₹{r.costIncurred}</strong></span>
-                        {r.yieldAmountQuintals > 0 && <span>Yield: <strong>{r.yieldAmountQuintals} qtl</strong></span>}
+                        <span>{t('cost_label', 'Cost:', 'செலவு:')} <strong>₹{r.costIncurred}</strong></span>
+                        {r.yieldAmountQuintals > 0 && <span>{t('yield_label', 'Yield:', 'மகசூல்:')} <strong>{r.yieldAmountQuintals} qtl</strong></span>}
                       </div>
                     </div>
                     <button
@@ -197,19 +207,21 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
         {activeTab === 'reminders' && (
           <div className="max-w-5xl mx-auto space-y-4">
             <div className="flex justify-between items-center bg-white p-4 rounded-2xl border border-gray-200">
-              <h3 className="text-sm font-bold text-[#143D2B]">Scheduled Tasks & Irrigation Reminders</h3>
+              <h3 className="text-sm font-bold text-[#143D2B]">
+                {t('reminders_section_title', 'Scheduled Tasks & Irrigation Reminders', 'திட்டமிடப்பட்ட பணிகள் & நினைவூட்டல்கள்')}
+              </h3>
               <button
                 onClick={() => setShowAddReminderModal(true)}
                 className="px-4 py-2 bg-[#143D2B] hover:bg-[#1B5E20] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
                 <Plus className="w-4 h-4" />
-                <span>Create Reminder</span>
+                <span>{t('btn_create_reminder', 'Create Reminder', 'நினைவூட்டல் உருவாக்க')}</span>
               </button>
             </div>
 
             {reminders.length === 0 ? (
               <div className="bg-white p-8 rounded-2xl border border-gray-200 text-center text-xs text-gray-500">
-                No reminders scheduled. Click "Create Reminder" to set watering, fertilizing, or harvest notifications.
+                {t('no_reminders_msg', 'No reminders scheduled. Click "Create Reminder" to set watering, fertilizing, or harvest notifications.', 'நினைவூட்டல்கள் எதுவும் இல்லை.')}
               </div>
             ) : (
               <div className="space-y-3">
@@ -237,7 +249,7 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                         </h4>
                         <div className="flex items-center gap-3 text-[11px] text-gray-500 mt-0.5">
                           <span className="font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded uppercase">{rem.category}</span>
-                          <span>Due: {rem.dueDate}</span>
+                          <span>{t('due_date_label', 'Due:', 'கடைசி தேதி:')} {rem.dueDate}</span>
                         </div>
                       </div>
                     </div>
@@ -260,10 +272,12 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
         {showAddRecordModal && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div className="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl border border-gray-200">
-              <h3 className="text-base font-bold text-[#143D2B] mb-4">Add Field Operational Record</h3>
+              <h3 className="text-base font-bold text-[#143D2B] mb-4">
+                {t('modal_add_rec_title', 'Add Field Operational Record', 'புதிய விவசாயப் பணியைப் பதிவு செய்ய')}
+              </h3>
               <form onSubmit={handleCreateRecord} className="space-y-3 text-xs">
                 <div>
-                  <label className="font-bold text-gray-700 block mb-1">Crop Name</label>
+                  <label className="font-bold text-gray-700 block mb-1">{t('rec_crop_name', 'Crop Name', 'பயிர் பெயர்')}</label>
                   <input
                     type="text"
                     value={newCropName}
@@ -273,7 +287,7 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-gray-700 block mb-1">Field Name / Block</label>
+                  <label className="font-bold text-gray-700 block mb-1">{t('rec_field_name', 'Field Name / Block', 'நிலப் பகுதி / தொகுதி')}</label>
                   <input
                     type="text"
                     value={newFieldName}
@@ -284,21 +298,21 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="font-bold text-gray-700 block mb-1">Activity Type</label>
+                    <label className="font-bold text-gray-700 block mb-1">{t('rec_act_type', 'Activity Type', 'பணி வகை')}</label>
                     <select
                       value={newActivityType}
                       onChange={(e) => setNewActivityType(e.target.value as any)}
                       className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#143D2B] bg-white"
                     >
-                      <option value="sowing">Sowing / Planting</option>
-                      <option value="fertilization">Fertilization</option>
-                      <option value="pest_control">Pest Control Spray</option>
-                      <option value="irrigation">Irrigation</option>
-                      <option value="harvest">Harvesting</option>
+                      <option value="sowing">{t('act_sowing', 'Sowing / Planting', 'விதைப்பு / நடுவு')}</option>
+                      <option value="fertilization">{t('act_fert', 'Fertilization', 'உரமிடுதல்')}</option>
+                      <option value="pest_control">{t('act_pest', 'Pest Control Spray', 'பூச்சிக்கொல்லி தெளிப்பு')}</option>
+                      <option value="irrigation">{t('act_irrig', 'Irrigation', 'நீர் பாய்ச்சுதல்')}</option>
+                      <option value="harvest">{t('act_harvest', 'Harvesting', 'அறுவடை')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="font-bold text-gray-700 block mb-1">Cost Incurred (₹)</label>
+                    <label className="font-bold text-gray-700 block mb-1">{t('rec_cost', 'Cost Incurred (₹)', 'செலவுத் தொகை (₹)')}</label>
                     <input
                       type="number"
                       value={newCost}
@@ -308,7 +322,7 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="font-bold text-gray-700 block mb-1">Notes & Activity Details</label>
+                  <label className="font-bold text-gray-700 block mb-1">{t('rec_notes', 'Notes & Activity Details', 'குறிப்புகள் மற்றும் விவரங்கள்')}</label>
                   <textarea
                     value={newNotes}
                     onChange={(e) => setNewNotes(e.target.value)}
@@ -322,13 +336,13 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                     onClick={() => setShowAddRecordModal(false)}
                     className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl"
                   >
-                    Cancel
+                    {t('btn_cancel', 'Cancel', 'ரத்து செய்')}
                   </button>
                   <button
                     type="submit"
                     className="px-4 py-2 bg-[#143D2B] hover:bg-[#1B5E20] text-white font-bold rounded-xl"
                   >
-                    Save Record
+                    {t('btn_save', 'Save Record', 'சேமிக்கவும்')}
                   </button>
                 </div>
               </form>
@@ -340,10 +354,12 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
         {showAddReminderModal && (
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div className="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl border border-gray-200">
-              <h3 className="text-base font-bold text-[#143D2B] mb-4">Create Farming Task Reminder</h3>
+              <h3 className="text-base font-bold text-[#143D2B] mb-4">
+                {t('modal_add_rem_title', 'Create Farming Task Reminder', 'புதிய நினைவூட்டல் உருவாக்க')}
+              </h3>
               <form onSubmit={handleCreateReminder} className="space-y-3 text-xs">
                 <div>
-                  <label className="font-bold text-gray-700 block mb-1">Reminder Title</label>
+                  <label className="font-bold text-gray-700 block mb-1">{t('rem_title_label', 'Reminder Title', 'நினைவூட்டல் தலைப்பு')}</label>
                   <input
                     type="text"
                     placeholder="e.g. Water Block B Paddy Fields"
@@ -355,21 +371,21 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="font-bold text-gray-700 block mb-1">Category</label>
+                    <label className="font-bold text-gray-700 block mb-1">{t('rem_cat_label', 'Category', 'பிரிவு')}</label>
                     <select
                       value={newRemCategory}
                       onChange={(e) => setNewRemCategory(e.target.value as any)}
                       className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#143D2B] bg-white"
                     >
-                      <option value="watering">Watering / Irrigation</option>
-                      <option value="fertilizing">Fertilizing</option>
-                      <option value="spraying">Pest Spraying</option>
-                      <option value="planting">Planting</option>
-                      <option value="harvesting">Harvesting</option>
+                      <option value="watering">{t('cat_water', 'Watering / Irrigation', 'நீர் பாய்ச்சுதல்')}</option>
+                      <option value="fertilizing">{t('cat_fert', 'Fertilizing', 'உரமிடுதல்')}</option>
+                      <option value="spraying">{t('cat_spray', 'Pest Spraying', 'மருந்து தெளிப்பு')}</option>
+                      <option value="planting">{t('cat_plant', 'Planting', 'நடுவு')}</option>
+                      <option value="harvesting">{t('cat_harvest', 'Harvesting', 'அறுவடை')}</option>
                     </select>
                   </div>
                   <div>
-                    <label className="font-bold text-gray-700 block mb-1">Due Date</label>
+                    <label className="font-bold text-gray-700 block mb-1">{t('rem_due_label', 'Due Date', 'கடைசி தேதி')}</label>
                     <input
                       type="date"
                       value={newRemDueDate}
@@ -380,7 +396,7 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="font-bold text-gray-700 block mb-1">Notes / Instructions</label>
+                  <label className="font-bold text-gray-700 block mb-1">{t('rem_notes_label', 'Notes / Instructions', 'குறிப்புகள்')}</label>
                   <textarea
                     value={newRemNotes}
                     onChange={(e) => setNewRemNotes(e.target.value)}
@@ -394,13 +410,13 @@ export const FarmingRecordsRemindersSection: React.FC = () => {
                     onClick={() => setShowAddReminderModal(false)}
                     className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl"
                   >
-                    Cancel
+                    {t('btn_cancel', 'Cancel', 'ரத்து செய்')}
                   </button>
                   <button
                     type="submit"
                     className="px-4 py-2 bg-[#143D2B] hover:bg-[#1B5E20] text-white font-bold rounded-xl"
                   >
-                    Create Reminder
+                    {t('btn_create', 'Create Reminder', 'உருவாக்கவும்')}
                   </button>
                 </div>
               </form>

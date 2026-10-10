@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, User, Lock, Mail, Phone, MapPin, Sprout, ShieldCheck, Loader2 } from 'lucide-react';
+import { X, User, Lock, Mail, Phone, Sprout, ShieldCheck, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -37,9 +37,9 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
       if (mode === 'login') {
         const { error } = await signIn(email, password);
         if (error) {
-          setErrorMsg(error.message || 'Failed to sign in. Please check your credentials.');
+          setErrorMsg(error.message || t('auth_err_signin', 'Failed to sign in. Please check your credentials.', 'உள்நுழைவது தோல்வியடைந்தது.'));
         } else {
-          setSuccessMsg('Successfully signed in!');
+          setSuccessMsg(t('auth_succ_signin', 'Successfully signed in!', 'வெற்றிகரமாக உள்நுழைந்தீர்கள்!'));
           setTimeout(() => onClose(), 800);
         }
       } else {
@@ -53,14 +53,14 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
         });
 
         if (error) {
-          setErrorMsg(error.message || 'Registration failed. Please try again.');
+          setErrorMsg(error.message || t('auth_err_signup', 'Registration failed. Please try again.', 'பதிவு தோல்வியடைந்தது.'));
         } else {
-          setSuccessMsg('Account created successfully! Session saved.');
+          setSuccessMsg(t('auth_succ_signup', 'Account created successfully! Session saved.', 'கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது!'));
           setTimeout(() => onClose(), 1000);
         }
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'An error occurred during authentication.');
+      setErrorMsg(err.message || t('auth_err_gen', 'An error occurred during authentication.', 'பிழை ஏற்பட்டது.'));
     } finally {
       setLoading(false);
     }
@@ -79,15 +79,17 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
           </button>
           <div className="flex items-center gap-2 text-[#F2C14E] text-xs font-bold uppercase tracking-wider mb-1">
             <Sprout className="w-4 h-4" />
-            <span>FARMERS AI Authentication</span>
+            <span>FARMERS AI</span>
           </div>
           <h3 className="text-xl font-extrabold">
-            {mode === 'login' ? 'Farmer Sign In' : 'Farmer Registration'}
+            {mode === 'login'
+              ? t('modal_signin_title', 'Farmer Sign In', 'விவசாயி உள்நுழைவு')
+              : t('modal_signup_title', 'Farmer Registration', 'விவசாயி புதிய கணக்கு')}
           </h3>
           <p className="text-xs text-emerald-100 mt-1">
             {isSupabaseActive
-              ? 'Secured with Supabase Auth & Row Level Security (RLS)'
-              : 'Demo Authentication Mode'}
+              ? t('supa_auth_secured', 'Secured with Supabase Auth & Row Level Security (RLS)', 'Supabase Auth மூலம் பாதுகாக்கப்பட்டது')
+              : t('demo_auth_mode', 'Demo Authentication Mode', 'டெமோ உள்நுழைவு முறை')}
           </p>
         </div>
 
@@ -101,7 +103,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
                 : 'text-gray-500 hover:text-gray-800'
             }`}
           >
-            Sign In
+            {t('tab_signin', 'Sign In', 'உள்நுழைவு')}
           </button>
           <button
             onClick={() => setMode('register')}
@@ -111,7 +113,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
                 : 'text-gray-500 hover:text-gray-800'
             }`}
           >
-            Create New Account
+            {t('tab_register', 'Create New Account', 'புதிய கணக்கு')}
           </button>
         </div>
 
@@ -133,7 +135,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
           {mode === 'register' && (
             <>
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Full Name</label>
+                <label className="font-bold text-gray-700 block mb-1">{t('lbl_fullname', 'Full Name', 'முழு பெயர்')}</label>
                 <div className="relative">
                   <User className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
                   <input
@@ -148,7 +150,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Phone Number</label>
+                <label className="font-bold text-gray-700 block mb-1">{t('lbl_phone', 'Phone Number', 'கைபேசி எண்')}</label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
                   <input
@@ -164,7 +166,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="font-bold text-gray-700 block mb-1">District</label>
+                  <label className="font-bold text-gray-700 block mb-1">{t('lbl_district', 'District', 'மாவட்டம்')}</label>
                   <input
                     type="text"
                     value={district}
@@ -174,7 +176,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-gray-700 block mb-1">Land (Acres)</label>
+                  <label className="font-bold text-gray-700 block mb-1">{t('lbl_acres', 'Land (Acres)', 'நிலம் (ஏக்கர்)')}</label>
                   <input
                     type="number"
                     value={landAcreage}
@@ -188,7 +190,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
           )}
 
           <div>
-            <label className="font-bold text-gray-700 block mb-1">Email Address</label>
+            <label className="font-bold text-gray-700 block mb-1">{t('lbl_email', 'Email Address', 'மின்னஞ்சல் முகவரி')}</label>
             <div className="relative">
               <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
               <input
@@ -203,7 +205,7 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
           </div>
 
           <div>
-            <label className="font-bold text-gray-700 block mb-1">Password</label>
+            <label className="font-bold text-gray-700 block mb-1">{t('lbl_password', 'Password', 'கடவுச்சொல்')}</label>
             <div className="relative">
               <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
               <input
@@ -225,7 +227,11 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <span>{mode === 'login' ? 'Sign In to Dashboard' : 'Register Farmer Account'}</span>
+              <span>
+                {mode === 'login'
+                  ? t('btn_signin_dash', 'Sign In to Dashboard', 'டாஷ்போர்டில் உள்நுழையவும்')
+                  : t('btn_reg_account', 'Register Farmer Account', 'கணக்கை பதிவு செய்')}
+              </span>
             )}
           </button>
         </form>

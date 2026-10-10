@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CloudSun, Thermometer, Droplets, Wind, RefreshCw, TrendingUp, ShieldCheck, Calendar, MapPin } from 'lucide-react';
+import { CloudSun, RefreshCw, Calendar, MapPin, Droplets, Wind } from 'lucide-react';
 import { weatherService, WeatherData } from '../services/weatherService';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -33,13 +33,17 @@ export const WeatherMarketSection: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-[#143D2B] text-xs font-bold uppercase tracking-wider mb-4">
             <CloudSun className="w-4 h-4 text-[#1B5E20]" />
-            <span>Meteorological & APMC Intelligence</span>
+            <span>{t('weather_badge', 'Meteorological & APMC Intelligence', 'வானிலை & சந்தை தகவல்')}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#17251D] tracking-tight">
-            {t('weather_title', 'Real-Time Weather & APMC Market Mandi Prices')}
+            {t('weather_title', 'Real-Time Weather & APMC Market Mandi Prices', 'நேரலை வானிலை & சந்தை விலைகள்')}
           </h2>
           <p className="mt-3 text-base text-[#17251D]/70">
-            {t('weather_subtitle', 'Live hyper-local weather forecast and verified market prices.')}
+            {t(
+              'weather_subtitle',
+              'Live hyper-local weather forecast and verified market prices.',
+              'உள்ளூர் நேரலை வானிலை மற்றும் சரிபார்க்கப்பட்ட APMC சந்தை விலை விவரங்கள்.'
+            )}
           </p>
         </div>
 
@@ -47,7 +51,7 @@ export const WeatherMarketSection: React.FC = () => {
         <div className="max-w-4xl mx-auto mb-8 bg-[#F7F6EF] p-4 rounded-2xl border border-[#143D2B]/15 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-xs font-bold text-[#143D2B]">
             <MapPin className="w-4 h-4 text-[#F2C14E]" />
-            <span>Select Regional Weather Station:</span>
+            <span>{t('select_weather_station', 'Select Regional Weather Station:', 'மாவட்ட வானிலை மையத்தைத் தேர்ந்தெடுக்கவும்:')}</span>
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <select
@@ -83,7 +87,7 @@ export const WeatherMarketSection: React.FC = () => {
                     {weather.locationName}
                   </span>
                   <span className="text-[11px] text-emerald-200">
-                    Source: {weather.source}
+                    {t('weather_source_label', 'Source:', 'மூலம்:')} {weather.source}
                   </span>
                 </div>
 
@@ -99,17 +103,23 @@ export const WeatherMarketSection: React.FC = () => {
               <div className="mt-8 pt-4 border-t border-white/10 grid grid-cols-3 gap-2 text-center text-xs">
                 <div className="bg-white/5 p-2 rounded-xl">
                   <Droplets className="w-4 h-4 mx-auto mb-1 text-cyan-300" />
-                  <span className="block text-gray-300 text-[10px]">Humidity</span>
+                  <span className="block text-gray-300 text-[10px]">
+                    {t('humidity_label', 'Humidity', 'ஈரப்பதம்')}
+                  </span>
                   <strong className="text-white text-sm">{weather.humidity}%</strong>
                 </div>
                 <div className="bg-white/5 p-2 rounded-xl">
                   <Wind className="w-4 h-4 mx-auto mb-1 text-teal-300" />
-                  <span className="block text-gray-300 text-[10px]">Wind Speed</span>
+                  <span className="block text-gray-300 text-[10px]">
+                    {t('wind_label', 'Wind Speed', 'காற்றின் வேகம்')}
+                  </span>
                   <strong className="text-white text-sm">{weather.windSpeedKmH} km/h</strong>
                 </div>
                 <div className="bg-white/5 p-2 rounded-xl">
                   <Droplets className="w-4 h-4 mx-auto mb-1 text-blue-300" />
-                  <span className="block text-gray-300 text-[10px]">Rainfall</span>
+                  <span className="block text-gray-300 text-[10px]">
+                    {t('rainfall_label', 'Rainfall', 'மழை அளவு')}
+                  </span>
                   <strong className="text-white text-sm">{weather.precipitationMm} mm</strong>
                 </div>
               </div>
@@ -119,7 +129,7 @@ export const WeatherMarketSection: React.FC = () => {
             <div className="md:col-span-5 bg-[#F7F6EF] p-6 rounded-3xl border border-[#143D2B]/15 flex flex-col justify-between">
               <h4 className="text-sm font-bold text-[#143D2B] flex items-center gap-2 mb-4">
                 <Calendar className="w-4 h-4 text-[#F2C14E]" />
-                5-Day Agricultural Weather Outlook
+                {t('forecast_title', '5-Day Agricultural Weather Outlook', '5-நாள் வானிலை முன்னறிவிப்பு')}
               </h4>
 
               <div className="space-y-2.5 text-xs">
@@ -129,7 +139,9 @@ export const WeatherMarketSection: React.FC = () => {
                     <span className="text-gray-500 text-[11px]">{f.condition}</span>
                     <div className="text-right">
                       <span className="font-bold text-[#17251D]">{f.maxTemp}°C</span>
-                      <span className="text-gray-400 text-[10px] block">{f.precipitationProbability}% Rain</span>
+                      <span className="text-gray-400 text-[10px] block">
+                        {f.precipitationProbability}% {t('rain_prob', 'Rain', 'மழை')}
+                      </span>
                     </div>
                   </div>
                 ))}

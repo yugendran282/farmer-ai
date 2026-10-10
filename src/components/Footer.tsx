@@ -1,7 +1,10 @@
 import React from 'react';
-import { Sprout, ShieldCheck } from 'lucide-react';
+import { Sprout } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Footer: React.FC = () => {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-[#17251D] text-white/80 text-xs border-t border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-16">
@@ -18,47 +21,51 @@ export const Footer: React.FC = () => {
             </div>
 
             <p className="text-sm font-serif italic text-[#F2C14E]">
-              Grow Smarter. Sell Better. Earn More.
+              {t('foot_motto', 'Grow Smarter. Sell Better. Earn More.', 'அறிவோடு விவசாயம் செய். சிறந்த முறையில் விற்பனை செய். அதிக லாபம் பெறு.')}
             </p>
 
             <p className="text-xs text-white/70 leading-relaxed max-w-sm">
-              Connecting farmers with intelligent agricultural insights, transparent crop-selling opportunities, verified local buyers, and rewards for sustainable farming practices.
+              {t(
+                'foot_desc',
+                'Connecting farmers with intelligent agricultural insights, transparent crop-selling opportunities, verified local buyers, and rewards for sustainable farming practices.',
+                'செயற்கை நுண்ணறிவுடன் கூடிய வேளாண் ஆலோசனைகள், வெளிப்படையான சந்தை வாய்ப்புகள் மற்றும் சரிபார்க்கப்பட்ட வாங்குபவர்களை இணைக்கிறது.'
+              )}
             </p>
 
             <div className="pt-2 text-[11px] text-white/50">
-              Initial platform designed for Indian agricultural clusters. Powered by AgriConnect hyper-local intelligence.
+              {t('foot_cluster', 'Designed for Indian agricultural clusters. Powered by AgriConnect hyper-local intelligence.', 'இந்திய விவசாயிகளுக்கான பிரத்யேக தளம்.')}
             </div>
           </div>
 
           {/* Nav Column 1: Platform Modules */}
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
-              Platform Modules
+              {t('foot_col1_title', 'Platform Modules', 'தளப் பிரிவுகள்')}
             </h4>
             <ul className="space-y-2.5 text-xs text-white/70">
               <li>
-                <a href="#market-dashboard" className="hover:text-white transition-colors">
-                  AI Market Intelligence
+                <a href="#crop-recommendation" className="hover:text-white transition-colors">
+                  {t('nav_recommendation', 'Crop Advisor', 'பயிர் வழிகாட்டி')}
                 </a>
               </li>
               <li>
-                <a href="#agriconnect" className="hover:text-white transition-colors">
-                  AgriConnect Discovery
+                <a href="#disease-scanner" className="hover:text-white transition-colors">
+                  {t('nav_disease', 'Disease Scanner', 'நோய் கண்டறிதல்')}
                 </a>
               </li>
               <li>
-                <a href="#crop-rewards" className="hover:text-white transition-colors">
-                  Crop Practice Score
+                <a href="#farming-assistant" className="hover:text-white transition-colors">
+                  {t('nav_assistant', 'FARMERS AI', 'விவசாயி AI')}
                 </a>
               </li>
               <li>
-                <a href="#marketplace" className="hover:text-white transition-colors">
-                  Local Buyer Marketplace
+                <a href="#weather-market" className="hover:text-white transition-colors">
+                  {t('nav_weather', 'Weather & Markets', 'வானிலை & சந்தை')}
                 </a>
               </li>
               <li>
-                <a href="#market-dashboard" className="hover:text-white transition-colors">
-                  Net Return Calculator
+                <a href="#records-reminders" className="hover:text-white transition-colors">
+                  {t('nav_records', 'Records & Reminders', 'பதிவுகள் & நினைவூட்டல்')}
                 </a>
               </li>
             </ul>
@@ -67,32 +74,32 @@ export const Footer: React.FC = () => {
           {/* Nav Column 2: Commercial Partners */}
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
-              Commercial Partners
+              {t('foot_col2_title', 'Commercial Partners', 'வணிகப் பங்குதாரர்கள்')}
             </h4>
             <ul className="space-y-2.5 text-xs text-white/70">
               <li>
                 <a href="#dealers" className="hover:text-white transition-colors">
-                  Dealer Promotion Plans
+                  {t('f_dealer_prom', 'Dealer Promotion Plans', 'வியாபாரி திட்டங்கள்')}
                 </a>
               </li>
               <li>
                 <a href="#dealers" className="hover:text-white transition-colors">
-                  Fertilizer Brand Campaigns
+                  {t('f_fert_camp', 'Fertilizer Brand Campaigns', 'உர பிராண்ட் திட்டங்கள்')}
                 </a>
               </li>
               <li>
                 <a href="#marketplace" className="hover:text-white transition-colors">
-                  Buyer Verification Program
+                  {t('f_buyer_verif', 'Buyer Verification Program', 'வாங்குபவர் சரிபார்ப்பு')}
                 </a>
               </li>
               <li>
                 <a href="#dealers" className="hover:text-white transition-colors">
-                  AgriConnect Trust Policy
+                  {t('f_trust_pol', 'AgriConnect Trust Policy', 'நம்பகத்தன்மை கொள்கை')}
                 </a>
               </li>
               <li>
                 <a href="#alerts" className="hover:text-white transition-colors">
-                  WhatsApp Alerts System
+                  {t('f_wa_alerts', 'WhatsApp Alerts System', 'வாட்ஸ்அப் செய்தி முறை')}
                 </a>
               </li>
             </ul>
@@ -101,32 +108,27 @@ export const Footer: React.FC = () => {
           {/* Nav Column 3: Trust & Governance */}
           <div>
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4">
-              Trust & Legal
+              {t('foot_col3_title', 'Trust & Legal', 'பாதுகாப்பு & விதிமுறைகள்')}
             </h4>
             <ul className="space-y-2.5 text-xs text-white/70">
               <li>
                 <span className="hover:text-white transition-colors cursor-pointer">
-                  Farmer Privacy Policy
+                  {t('f_priv_pol', 'Farmer Privacy Policy', 'தனியுரிமைக் கொள்கை')}
                 </span>
               </li>
               <li>
                 <span className="hover:text-white transition-colors cursor-pointer">
-                  Terms of Service
+                  {t('f_terms', 'Terms of Service', 'சேவை விதிமுறைகள்')}
                 </span>
               </li>
               <li>
                 <span className="hover:text-white transition-colors cursor-pointer">
-                  Data Governance & Consent
-                </span>
-              </li>
-              <li>
-                <span className="hover:text-white transition-colors cursor-pointer">
-                  Editorial Independence
+                  {t('f_data_gov', 'Data Governance & Consent', 'தரவு பாதுகாப்பு ஒப்புதல்')}
                 </span>
               </li>
               <li>
                 <a href="#faq" className="hover:text-white transition-colors">
-                  Help & FAQs
+                  {t('f_faq', 'Help & FAQs', 'உதவி & கேள்விகள்')}
                 </a>
               </li>
             </ul>
@@ -139,9 +141,7 @@ export const Footer: React.FC = () => {
             © {new Date().getFullYear()} FARMERS AI Technologies. All rights reserved.
           </div>
           <div className="flex items-center gap-4">
-            <span>Prototype Demonstration Environment</span>
-            <span aria-hidden="true">·</span>
-            <span>Zero-Spam Farmer Shield Active</span>
+            <span>{t('f_proto_demo', 'Full-Stack Agricultural Platform', 'முழுமையான விவசாய தொழில்நுட்ப தளம்')}</span>
           </div>
         </div>
       </div>

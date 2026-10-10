@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { FAQS } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
 
 export const FaqSection: React.FC = () => {
+  const { language, t } = useLanguage();
   const [openId, setOpenId] = useState<string | null>('faq-1');
 
   const toggleFaq = (id: string) => {
@@ -15,15 +17,19 @@ export const FaqSection: React.FC = () => {
         {/* Section Heading */}
         <div className="max-w-3xl mb-14 text-center mx-auto">
           <div className="flex items-center justify-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#1B5E20] mb-3">
-            <span>Frequently Asked Questions</span>
+            <span>{t('faq_eyebrow1', 'Frequently Asked Questions', 'அடிக்கடி கேட்கப்படும் கேள்விகள்')}</span>
             <span aria-hidden="true">·</span>
-            <span>Platform Transparency</span>
+            <span>{t('faq_eyebrow2', 'Platform Transparency', 'வெளிப்படைத்தன்மை')}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#17251D] font-serif leading-[1.18] mb-4 text-balance">
-            Honest Answers for Farmers & Partners.
+            {t('faq_title', 'Honest Answers for Farmers & Partners.', 'விவசாயிகளுக்கான தெளிவான பதில்கள்.')}
           </h2>
           <p className="text-base sm:text-lg text-[#69786E] leading-relaxed">
-            Clear facts on how our algorithms, buyer verification protocols, crop points, and dealer programs operate.
+            {t(
+              'faq_subtitle',
+              'Clear facts on how our algorithms, buyer verification protocols, crop points, and dealer programs operate.',
+              'செயற்கை நுண்ணறிவு, வாங்குபவர் சரிபார்ப்பு மற்றும் விவசாய திட்டங்கள் பற்றிய விவரங்கள்.'
+            )}
           </p>
         </div>
 

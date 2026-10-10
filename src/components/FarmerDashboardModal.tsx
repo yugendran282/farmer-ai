@@ -1,6 +1,7 @@
 import React from 'react';
-import { X, User, MapPin, Phone, ShieldCheck, LogOut, Sprout } from 'lucide-react';
+import { X, ShieldCheck, LogOut, Sprout } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FarmerDashboardModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface FarmerDashboardModalProps {
 
 export const FarmerDashboardModal: React.FC<FarmerDashboardModalProps> = ({ isOpen, onClose }) => {
   const { user, profile, signOut } = useAuth();
+  const { t } = useLanguage();
 
   if (!isOpen || !user) return null;
 
@@ -24,9 +26,9 @@ export const FarmerDashboardModal: React.FC<FarmerDashboardModalProps> = ({ isOp
           </button>
           <div className="flex items-center gap-2 text-[#F2C14E] text-xs font-bold uppercase tracking-wider mb-1">
             <Sprout className="w-4 h-4" />
-            <span>Protected Farmer Profile</span>
+            <span>{t('dash_protected_tag', 'Protected Farmer Profile', 'பாதுகாக்கப்பட்ட விவசாயி சுயவிவரம்')}</span>
           </div>
-          <h3 className="text-xl font-extrabold">{profile?.fullName || 'Farmer Profile'}</h3>
+          <h3 className="text-xl font-extrabold">{profile?.fullName || t('farmer_profile_fallback', 'Farmer Profile', 'விவசாயி சுயவிவரம்')}</h3>
           <p className="text-xs text-emerald-100 mt-0.5">{user.email}</p>
         </div>
 
@@ -35,27 +37,31 @@ export const FarmerDashboardModal: React.FC<FarmerDashboardModalProps> = ({ isOp
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-600" />
               <div>
-                <strong className="block text-sm font-bold">Supabase Row Level Security Active</strong>
-                <span className="text-[11px] text-emerald-700">Your records and recommendations are private.</span>
+                <strong className="block text-sm font-bold">
+                  {t('rls_active_title', 'Supabase Row Level Security Active', 'Supabase தரவுத்தள பாதுகாப்பு செயலில் உள்ளது')}
+                </strong>
+                <span className="text-[11px] text-emerald-700">
+                  {t('rls_active_sub', 'Your records and recommendations are private.', 'உங்கள் பதிவுகள் மற்றும் பரிந்துரைகள் தனிப்பட்டவை.')}
+                </span>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 bg-gray-50 p-4 rounded-2xl border border-gray-200">
             <div>
-              <span className="text-gray-500 font-bold block mb-0.5">Phone Number:</span>
+              <span className="text-gray-500 font-bold block mb-0.5">{t('phone_lbl', 'Phone Number:', 'கைபேசி எண்:')}</span>
               <p className="font-semibold text-gray-800">{profile?.phoneNumber || 'N/A'}</p>
             </div>
             <div>
-              <span className="text-gray-500 font-bold block mb-0.5">District / State:</span>
+              <span className="text-gray-500 font-bold block mb-0.5">{t('district_state_lbl', 'District / State:', 'மாவட்டம் / மாநிலம்:')}</span>
               <p className="font-semibold text-gray-800">{profile?.district}, {profile?.state}</p>
             </div>
             <div>
-              <span className="text-gray-500 font-bold block mb-0.5">Total Landholding:</span>
-              <p className="font-semibold text-gray-800">{profile?.landAcreage || 5} Acres</p>
+              <span className="text-gray-500 font-bold block mb-0.5">{t('landholding_lbl', 'Total Landholding:', 'மொத்த நிலப்பரப்பு:')}</span>
+              <p className="font-semibold text-gray-800">{profile?.landAcreage || 5} {t('acres_unit', 'Acres', 'ஏக்கர்')}</p>
             </div>
             <div>
-              <span className="text-gray-500 font-bold block mb-0.5">Preferred Language:</span>
+              <span className="text-gray-500 font-bold block mb-0.5">{t('pref_lang_lbl', 'Preferred Language:', 'விரும்பும் மொழி:')}</span>
               <p className="font-semibold text-gray-800 uppercase">{profile?.preferredLanguage || 'English'}</p>
             </div>
           </div>
@@ -69,7 +75,7 @@ export const FarmerDashboardModal: React.FC<FarmerDashboardModalProps> = ({ isOp
               className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 font-bold rounded-xl flex items-center gap-2 cursor-pointer transition-colors"
             >
               <LogOut className="w-4 h-4" />
-              <span>Sign Out</span>
+              <span>{t('btn_signout', 'Sign Out', 'வெளியேறு')}</span>
             </button>
           </div>
         </div>
