@@ -16,6 +16,7 @@ export interface FarmerProfile {
 
 export interface AuthResult {
   error: string | null;
+  errorCode?: string;
   requiresEmailConfirmation?: boolean;
 }
 
@@ -175,12 +176,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         if (error.message.includes('rate limit')) {
-          return { error: 'Email send rate limit reached. Please check your inbox or try again shortly.' };
+          return {
+            error: 'Email send rate limit reached. Please check your inbox or try again shortly.',
+            errorCode: 'auth_err_rate_limit',
+          };
         }
         if (error.message.includes('already registered')) {
-          return { error: 'This email is already registered. Please sign in instead.' };
+          return {
+            error: 'This email is already registered. Please sign in instead.',
+            errorCode: 'auth_err_already_registered',
+          };
         }
-        return { error: error.message };
+        return { error: error.message, errorCode: 'auth_err_gen' };
       }
 
       if (data.user && !data.session) {
@@ -195,7 +202,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return { error: null };
     } catch (err: any) {
-      return { error: err.message || 'Registration failed. Please check network connection.' };
+      return {
+        error: err.message || 'Registration failed. Please check network connection.',
+        errorCode: 'auth_err_reg_failed',
+      };
     }
   };
 
@@ -229,12 +239,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         if (error.message.includes('Invalid login credentials')) {
-          return { error: 'Invalid email or password. If you recently registered, please confirm your email first.' };
+          return {
+            error: 'Invalid email or password. If you recently registered, please confirm your email first.',
+            errorCode: 'auth_err_invalid_credentials',
+          };
         }
         if (error.message.includes('Email not confirmed')) {
-          return { error: 'Your email is not confirmed yet. Please check your inbox for the confirmation link.' };
+          return {
+            error: 'Your email is not confirmed yet. Please check your inbox for the confirmation link.',
+            errorCode: 'auth_err_email_not_confirmed',
+          };
         }
-        return { error: error.message };
+        return { error: error.message, errorCode: 'auth_err_gen' };
       }
 
       if (data.user) {
@@ -243,7 +259,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return { error: null };
     } catch (err: any) {
-      return { error: err.message || 'Failed to connect to authentication server.' };
+      return {
+        error: err.message || 'Failed to connect to authentication server.',
+        errorCode: 'auth_err_network_fail',
+      };
     }
   };
 

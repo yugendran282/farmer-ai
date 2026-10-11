@@ -47,8 +47,9 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
   const [landAcreage, setLandAcreage] = useState(5);
 
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [errorCode, setErrorCode] = useState<string | null>(null);
+  const [customErrorFallback, setCustomErrorFallback] = useState<string | null>(null);
+  const [successCode, setSuccessCode] = useState<string | null>(null);
   const [emailConfirmNotice, setEmailConfirmNotice] = useState(false);
   const [showForgotNotice, setShowForgotNotice] = useState(false);
 
@@ -56,20 +57,24 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
 
   const validateForm = (): boolean => {
     if (!email.trim() || !email.includes('@')) {
-      setErrorMsg(t('auth_err_email_invalid', 'Please enter a valid email address.', 'சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும்.'));
+      setErrorCode('auth_err_email_invalid');
+      setCustomErrorFallback(null);
       return false;
     }
     if (password.length < 6) {
-      setErrorMsg(t('auth_err_pass_len', 'Password must be at least 6 characters long.', 'கடவுச்சொல் குறைந்தபட்சம் 6 எழுத்துகள் இருக்க வேண்டும்.'));
+      setErrorCode('auth_err_pass_len');
+      setCustomErrorFallback(null);
       return false;
     }
     if (mode === 'register') {
       if (!fullName.trim()) {
-        setErrorMsg(t('auth_err_name_req', 'Full name is required.', 'முழு பெயர் தேவை.'));
+        setErrorCode('auth_err_name_req');
+        setCustomErrorFallback(null);
         return false;
       }
       if (password !== confirmPassword) {
-        setErrorMsg(t('auth_err_pass_match', 'Passwords do not match. Please verify.', 'கடவுச்சொற்கள் பொருந்தவில்லை. மீண்டும் சரிபார்க்கவும்.'));
+        setErrorCode('auth_err_pass_match');
+        setCustomErrorFallback(null);
         return false;
       }
     }
@@ -78,8 +83,9 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
-    setSuccessMsg(null);
+    setErrorCode(null);
+    setCustomErrorFallback(null);
+    setSuccessCode(null);
     setEmailConfirmNotice(false);
     setShowForgotNotice(false);
 
@@ -89,18 +95,30 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
 
     try {
       if (mode === 'login') {
-        const { error } = await signIn(email.trim(), password);
-        if (error) {
-          setErrorMsg(error);
+        const { error, errorCode: errCode } = await signIn(email.trim(), password);
+        if (error || errCode) {
+          if (errCode) {
+            setErrorCode(errCode);
+          } else {
+            // Check known strings if no errorCode provided
+            if (error?.includes('Invalid email or password') || error?.includes('Invalid login credentials')) {
+              setErrorCode('auth_err_invalid_credentials');
+            } else if (error?.includes('not confirmed')) {
+              setErrorCode('auth_err_email_not_confirmed');
+            } else {
+              setErrorCode('auth_err_gen');
+              setCustomErrorFallback(error || null);
+            }
+          }
         } else {
-          setSuccessMsg(t('auth_succ_signin', 'Successfully signed in!', 'வெற்றிகரமாக உள்நுழைந்தீர்கள்!'));
+          setSuccessCode('auth_succ_signin');
           setTimeout(() => {
             onClose();
             if (onSuccessAuth) onSuccessAuth();
           }, 600);
         }
       } else {
-        const { error, requiresEmailConfirmation } = await signUp(email.trim(), password, {
+        const { error, errorCode: errCode, requiresEmailConfirmation } = await signUp(email.trim(), password, {
           fullName: fullName.trim(),
           phoneNumber: phoneNumber.trim(),
           district: district.trim(),
@@ -109,19 +127,24 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
           preferredLanguage: language,
         });
 
-        if (error) {
-          setErrorMsg(error);
+        if (error || errCode) {
+          if (errCode) {
+            setErrorCode(errCode);
+          } else {
+            if (error?.includes('already registered')) {
+              setErrorCode('auth_err_already_registered');
+            } else if (error?.includes('rate limit')) {
+              setErrorCode('auth_err_rate_limit');
+            } else {
+              setErrorCode('auth_err_gen');
+              setCustomErrorFallback(error || null);
+            }
+          }
         } else if (requiresEmailConfirmation) {
           setEmailConfirmNotice(true);
-          setSuccessMsg(
-            t(
-              'signup_confirm_msg',
-              'Registration initiated! Please check your email inbox to confirm your account before logging in.',
-              'பதிவு செய்யப்பட்டது! உள்நுழைவதற்கு முன் உங்கள் மின்னஞ்சலை சரிபார்க்கவும்.'
-            )
-          );
+          setSuccessCode('signup_confirm_msg');
         } else {
-          setSuccessMsg(t('auth_succ_signup', 'Account created successfully! Session saved.', 'கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது!'));
+          setSuccessCode('auth_succ_signup');
           setTimeout(() => {
             onClose();
             if (onSuccessAuth) onSuccessAuth();
@@ -129,11 +152,15 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
         }
       }
     } catch (err: any) {
-      setErrorMsg(err.message || t('auth_err_gen', 'An error occurred during authentication.', 'பிழை ஏற்பட்டது.'));
+      setErrorCode('auth_err_gen');
+      setCustomErrorFallback(err.message || null);
     } finally {
       setLoading(false);
     }
   };
+
+  const displayedError = errorCode ? t(errorCode, customErrorFallback || undefined) : null;
+  const displayedSuccess = successCode ? t(successCode) : null;
 
   return (
     <div
@@ -271,8 +298,9 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
                 type="button"
                 onClick={() => {
                   setMode('login');
-                  setErrorMsg(null);
-                  setSuccessMsg(null);
+                  setErrorCode(null);
+                  setCustomErrorFallback(null);
+                  setSuccessCode(null);
                   setShowForgotNotice(false);
                 }}
                 className={`flex-1 py-2.5 rounded-xl text-center transition-all cursor-pointer ${
@@ -287,8 +315,9 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
                 type="button"
                 onClick={() => {
                   setMode('register');
-                  setErrorMsg(null);
-                  setSuccessMsg(null);
+                  setErrorCode(null);
+                  setCustomErrorFallback(null);
+                  setSuccessCode(null);
                   setShowForgotNotice(false);
                 }}
                 className={`flex-1 py-2.5 rounded-xl text-center transition-all cursor-pointer ${
@@ -302,17 +331,17 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
             </div>
 
             {/* Status Messages */}
-            {errorMsg && (
+            {displayedError && (
               <div className="p-3.5 mb-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl text-xs font-medium flex items-start gap-2.5 animate-in fade-in">
                 <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-                <span className="flex-1">{errorMsg}</span>
+                <span className="flex-1">{displayedError}</span>
               </div>
             )}
 
-            {successMsg && (
+            {displayedSuccess && (
               <div className="p-3.5 mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-medium flex items-start gap-2.5 animate-in fade-in">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span className="flex-1">{successMsg}</span>
+                <span className="flex-1">{displayedSuccess}</span>
               </div>
             )}
 
@@ -533,8 +562,9 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
                   type="button"
                   onClick={() => {
                     setMode('register');
-                    setErrorMsg(null);
-                    setSuccessMsg(null);
+                    setErrorCode(null);
+                    setCustomErrorFallback(null);
+                    setSuccessCode(null);
                     setShowForgotNotice(false);
                   }}
                   className="text-xs font-semibold text-agniva-primary hover:text-agniva-fresh hover:underline cursor-pointer"
@@ -546,8 +576,9 @@ export const FarmerAuthModal: React.FC<FarmerAuthModalProps> = ({ isOpen, onClos
                   type="button"
                   onClick={() => {
                     setMode('login');
-                    setErrorMsg(null);
-                    setSuccessMsg(null);
+                    setErrorCode(null);
+                    setCustomErrorFallback(null);
+                    setSuccessCode(null);
                     setShowForgotNotice(false);
                   }}
                   className="text-xs font-semibold text-agniva-primary hover:text-agniva-fresh hover:underline cursor-pointer"
