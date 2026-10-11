@@ -4,6 +4,10 @@ import { LanguageProvider } from './context/LanguageContext';
 
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { FeatureOverviewGrid } from './components/FeatureOverviewGrid';
+import { FarmerDashboardView } from './components/FarmerDashboardView';
+import { MobileBottomNav } from './components/MobileBottomNav';
+
 import { CapabilityStrip } from './components/CapabilityStrip';
 import { CropRecommendationSection } from './components/CropRecommendationSection';
 import { PlantDiseaseDetectionSection } from './components/PlantDiseaseDetectionSection';
@@ -36,6 +40,9 @@ import {
 import { BuyerOffer, DealerListing, PracticeCriterion } from './types';
 
 const MainAppContent: React.FC = () => {
+  // Navigation view state ('home' or 'dashboard')
+  const [currentView, setCurrentView] = useState<'home' | 'dashboard'>('home');
+
   // Modal states
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [dashboardModalOpen, setDashboardModalOpen] = useState(false);
@@ -52,119 +59,147 @@ const MainAppContent: React.FC = () => {
     setPartnerTier(tierName);
   };
 
-  const handleExploreClick = () => {
-    const el = document.getElementById('crop-recommendation');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const handleHowItWorksClick = () => {
-    const el = document.getElementById('how-it-works');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleScrollToSection = (sectionId: string) => {
+    setCurrentView('home');
+    setTimeout(() => {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 50);
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F6EF] text-[#17251D] flex flex-col selection:bg-[#DDF3E4] selection:text-[#143D2B]">
-      {/* 1. Premium Sticky Navbar */}
+    <div className="min-h-screen bg-[#F7F9F5] text-[#17231C] flex flex-col selection:bg-[#DDF3E4] selection:text-[#176B45] pb-16 md:pb-0">
+      {/* 1. Modern Responsive Navbar */}
       <Navbar
+        currentView={currentView}
+        onNavigateView={(view) => {
+          setCurrentView(view);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         onOpenAuth={() => setAuthModalOpen(true)}
-        onOpenDashboard={() => setDashboardModalOpen(true)}
-        onOpenPartner={() => setPartnerTier('Regional Growth')}
+        onOpenDashboardModal={() => setDashboardModalOpen(true)}
       />
 
-      <main className="flex-1 pt-16">
-        {/* 2. Hero Section */}
-        <Hero
-          onExploreClick={handleExploreClick}
-          onHowItWorksClick={handleHowItWorksClick}
-        />
+      {/* 2. Main Body Content */}
+      <main className="flex-1 pt-14">
+        {currentView === 'home' ? (
+          <>
+            {/* Mobile-First Hero Section */}
+            <Hero
+              onOpenDashboard={() => {
+                setCurrentView('dashboard');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onExploreFeatures={() => handleScrollToSection('feature-grid')}
+              onHowItWorksClick={() => handleScrollToSection('how-it-works')}
+            />
 
-        {/* 3. Capability Strip */}
-        <CapabilityStrip />
+            {/* Core Capabilities Interactive Feature Grid */}
+            <div id="feature-grid">
+              <FeatureOverviewGrid
+                onNavigateSection={handleScrollToSection}
+                onOpenDashboard={() => {
+                  setCurrentView('dashboard');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            </div>
 
-        {/* 4. AI Crop Soil Recommendation Module */}
-        <CropRecommendationSection />
+            {/* Agricultural Capability Strip */}
+            <CapabilityStrip />
 
-        {/* 5. Plant Disease Diagnostic Scanner */}
-        <PlantDiseaseDetectionSection />
+            {/* AI Crop Soil Recommendation Module */}
+            <CropRecommendationSection />
 
-        {/* 6. FARMERS AI Advisory Q&A Assistant */}
-        <FarmingAssistantSection />
+            {/* Plant Disease Diagnostic Scanner */}
+            <PlantDiseaseDetectionSection />
 
-        {/* 7. Real-Time Weather & APMC Market Mandi Prices */}
-        <WeatherMarketSection />
+            {/* FARMERS AI Advisory Q&A Assistant */}
+            <FarmingAssistantSection />
 
-        {/* 8. Farm Records & Scheduled Reminders */}
-        <FarmingRecordsRemindersSection />
+            {/* Real-Time Weather & APMC Market Mandi Prices */}
+            <WeatherMarketSection />
 
-        {/* 9. Platform Overview Bento */}
-        <PlatformOverview />
+            {/* Farm Records & Scheduled Reminders */}
+            <FarmingRecordsRemindersSection />
 
-        {/* 10. Unified AI Market Intelligence Dashboard */}
-        <MarketDashboard onContactBuyer={handleOpenContactBuyer} />
+            {/* Platform Overview Bento */}
+            <PlatformOverview />
 
-        {/* 11. AgriConnect Regional Intelligence */}
-        <AgriConnectSection
-          onContactDealer={(dealer: DealerListing) => {
-            setPartnerTier(`Inquiry with ${dealer.businessName}`);
-          }}
-        />
+            {/* Unified AI Market Intelligence Dashboard */}
+            <MarketDashboard onContactBuyer={handleOpenContactBuyer} />
 
-        {/* 12. Local Buyer Marketplace */}
-        <BuyerMarketplaceSection
-          onContactBuyer={handleOpenContactBuyer}
-          onPostHarvestListing={() => setOnboardingOpen(true)}
-        />
+            {/* AgriConnect Regional Intelligence */}
+            <AgriConnectSection
+              onContactDealer={(dealer: DealerListing) => {
+                setPartnerTier(`Inquiry with ${dealer.businessName}`);
+              }}
+            />
 
-        {/* 13. Crop Score & Sustainability Rewards */}
-        <CropScoreSection
-          onPreviewEvidence={(practice) => setPreviewPractice(practice)}
-        />
+            {/* Local Buyer Marketplace */}
+            <BuyerMarketplaceSection
+              onContactBuyer={handleOpenContactBuyer}
+              onPostHarvestListing={() => setOnboardingOpen(true)}
+            />
 
-        {/* 14. Dealer Promotions */}
-        <DealerPromotionSection onPartnerClick={handleOpenDealerCampaign} />
+            {/* Crop Score & Sustainability Rewards */}
+            <CropScoreSection
+              onPreviewEvidence={(practice) => setPreviewPractice(practice)}
+            />
 
-        {/* 15. WhatsApp Smart Alerts */}
-        <SmartAlertsSection />
+            {/* Dealer Promotions */}
+            <DealerPromotionSection onPartnerClick={handleOpenDealerCampaign} />
 
-        {/* 16. How FARMERS AI Works */}
-        <HowItWorks onStartOnboarding={() => setOnboardingOpen(true)} />
+            {/* WhatsApp Smart Alerts */}
+            <SmartAlertsSection />
 
-        {/* 17. Storytelling & Farmer Impact */}
-        <StorytellingSection />
+            {/* How FARMERS AI Works */}
+            <HowItWorks onStartOnboarding={() => setOnboardingOpen(true)} />
 
-        {/* 18. FAQ */}
-        <FaqSection />
+            {/* Storytelling & Farmer Impact */}
+            <StorytellingSection />
 
-        {/* 19. Final Call-to-Action */}
-        <CtaSection
-          onRegisterClick={() => setAuthModalOpen(true)}
-          onPartnerClick={() => handleOpenDealerCampaign('General Partner Tier')}
-        />
+            {/* FAQ */}
+            <FaqSection />
+
+            {/* Final Call-to-Action */}
+            <CtaSection
+              onRegisterClick={() => setAuthModalOpen(true)}
+              onPartnerClick={() => handleOpenDealerCampaign('General Partner Tier')}
+            />
+          </>
+        ) : (
+          /* Redesigned Full-Screen Mobile-First Farmer Dashboard */
+          <FarmerDashboardView
+            onNavigateSection={handleScrollToSection}
+            onOpenAuth={() => setAuthModalOpen(true)}
+          />
+        )}
       </main>
 
-      {/* 20. Comprehensive Footer */}
+      {/* 3. Comprehensive Footer */}
       <Footer />
 
-      {/* Floating Quick Auth / Partner Trigger */}
-      <div className="fixed bottom-6 right-6 z-40">
-        <button
-          onClick={() => setAuthModalOpen(true)}
-          className="bg-[#143D2B] hover:bg-[#1B5E20] text-white px-4 py-2.5 rounded-full shadow-2xl border border-[#F2C14E]/50 text-xs font-bold flex items-center gap-2 group transition-all transform hover:scale-105 cursor-pointer"
-        >
-          <span className="w-2 h-2 rounded-full bg-[#F2C14E] animate-pulse" />
-          <span>Farmer Portal Login</span>
-        </button>
-      </div>
+      {/* 4. Mobile Bottom Navigation Bar (Visible only on < 768px screens) */}
+      <MobileBottomNav
+        currentView={currentView}
+        onNavigateView={(view) => {
+          setCurrentView(view);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onNavigateSection={handleScrollToSection}
+      />
 
-      {/* Modals */}
+      {/* 5. Modals */}
       <FarmerAuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        onSuccessAuth={() => setDashboardModalOpen(true)}
+        onSuccessAuth={() => {
+          setCurrentView('dashboard');
+          setDashboardModalOpen(true);
+        }}
       />
 
       <FarmerDashboardModal

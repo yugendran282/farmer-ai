@@ -5,26 +5,60 @@
   --font-serif: 'Fraunces', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
 
+  /* Agniva Modern Agricultural SaaS Palette */
+  --color-agniva-green: #176B45;
+  --color-agniva-fresh: #38A169;
+  --color-agniva-bg: #F7F9F5;
+  --color-agniva-card: #FFFFFF;
+  --color-agniva-charcoal: #17231C;
+  --color-agniva-muted: #526357;
+  --color-agniva-border: #E2E8DF;
+  --color-agniva-amber: #D97706;
+  --color-agniva-red: #DC2626;
+
+  /* Legacy Preserved Color Variables */
   --color-forest: #143D2B;
-  --color-agri-green: #1B5E20;
+  --color-agri-green: #176B45;
   --color-emerald-deep: #087F5B;
-  --color-leaf: #4CAF50;
+  --color-leaf: #38A169;
   --color-mint: #DDF3E4;
-  --color-cream: #F7F6EF;
+  --color-cream: #F7F9F5;
   --color-harvest: #F2C14E;
   --color-soil: #765341;
-  --color-charcoal: #17251D;
-  --color-muted-text: #69786E;
+  --color-charcoal: #17231C;
+  --color-muted-text: #526357;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     font-family: var(--font-sans);
-    background-color: var(--color-cream);
-    color: var(--color-charcoal);
+    background-color: var(--color-agniva-bg);
+    color: var(--color-agniva-charcoal);
+    overflow-x: hidden;
   }
 
   h1, h2, .font-editorial {
     font-family: var(--font-serif);
   }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F0F4EC;
+}
+::-webkit-scrollbar-thumb {
+  background: #C4D3C5;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #176B45;
 }
