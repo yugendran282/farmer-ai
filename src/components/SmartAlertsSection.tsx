@@ -10,8 +10,10 @@ import {
   Sparkles,
   Info
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const SmartAlertsSection: React.FC = () => {
+  const { t } = useLanguage();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedAlerts, setSelectedAlerts] = useState<Record<string, boolean>>({
     market_updates: true,
@@ -26,33 +28,33 @@ export const SmartAlertsSection: React.FC = () => {
   const alertCategories = [
     {
       id: 'market_updates',
-      label: 'Market Price Updates',
-      desc: 'Significant price changes (>±2%) in your local APMC mandis.',
+      label: t('alert_cat_mkt', 'Market Price Updates', 'சந்தை விலை அறிவிப்புகள்'),
+      desc: t('alert_cat_mkt_d', 'Significant price changes (>±2%) in your local APMC mandis.', 'உள்ளூர் APMC சந்தைகளில் ஏற்படும் முக்கிய விலை மாற்றங்கள் (>±2%).'),
     },
     {
       id: 'buyer_offers',
-      label: 'New Buyer Offers',
-      desc: 'Direct procurement tenders for your registered crop varieties.',
+      label: t('alert_cat_offers', 'New Buyer Offers', 'புதிய வாங்குபவர் ஒப்பந்தங்கள்'),
+      desc: t('alert_cat_offers_d', 'Direct procurement tenders for your registered crop varieties.', 'உங்கள் பயிர் வகைகளுக்கான நேரடி கொள்முதல் ஒப்பந்தங்கள்.'),
     },
     {
       id: 'weather_risks',
-      label: 'Weather & Moisture Alerts',
-      desc: 'Unseasonal rainfall or humidity spikes affecting harvest timing.',
+      label: t('alert_cat_weather', 'Weather & Moisture Alerts', 'வானிலை மற்றும் மழை எச்சரிக்கைகள்'),
+      desc: t('alert_cat_weather_d', 'Unseasonal rainfall or humidity spikes affecting harvest timing.', 'அறுவடை நேரத்தை பாதிக்கும் பருவம் தவறிய மழை அல்லது ஈரப்பதம்.'),
     },
     {
       id: 'crop_score',
-      label: 'Crop Score & Rewards',
-      desc: 'Confirmation when submitted practice evidence is verified.',
+      label: t('alert_cat_score', 'Crop Score & Rewards', 'பயிர் மதிப்பெண் & ஊக்கத்தொகை'),
+      desc: t('alert_cat_score_d', 'Confirmation when submitted practice evidence is verified.', 'சமர்ப்பிக்கப்பட்ட நற்செயல் சான்றுகள் சரிபார்க்கப்படும்போது தகவல்.'),
     },
     {
       id: 'crop_care',
-      label: 'Agronomic Reminders',
-      desc: 'Optimal spray schedules and fertilizer application windows.',
+      label: t('alert_cat_care', 'Agronomic Reminders', 'விவசாயப் பணி நினைவூட்டல்கள்'),
+      desc: t('alert_cat_care_d', 'Optimal spray schedules and fertilizer application windows.', 'மருந்து தெளிப்பு மற்றும் உரமிடும் உகந்த கால அட்டவணை.'),
     },
     {
       id: 'dealer_availability',
-      label: 'Dealer Input Availability',
-      desc: 'Stock alerts on critical inputs like bio-fertilizers and drip parts.',
+      label: t('alert_cat_dealer', 'Dealer Input Availability', 'இடுபொருட்கள் கிடைக்கும் நிலை'),
+      desc: t('alert_cat_dealer_d', 'Stock alerts on critical inputs like bio-fertilizers and drip parts.', 'உயிர் உரங்கள் மற்றும் சொட்டு நீர் பாகங்கள் இருப்பு விவரம்.'),
     },
   ];
 
@@ -78,15 +80,19 @@ export const SmartAlertsSection: React.FC = () => {
         {/* Section Heading */}
         <div className="max-w-3xl mb-14">
           <div className="flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#1B5E20] mb-3">
-            <span>Direct WhatsApp & SMS Channel</span>
+            <span>{t('alert_eyebrow1', 'Direct WhatsApp & SMS Channel', 'வாட்ஸ்அப் & SMS சேவை')}</span>
             <span aria-hidden="true">·</span>
-            <span>Agricultural Smart Alerts</span>
+            <span>{t('alert_eyebrow2', 'Agricultural Smart Alerts', 'வேளாண் ஸ்மார்ட் எச்சரிக்கைகள்')}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#17251D] font-serif leading-[1.18] mb-4 text-balance">
-            Timely Intelligence in the Channel Farmers Use Most.
+            {t('alert_title', 'Timely Intelligence in the Channel Farmers Use Most.', 'விவசாயிகள் பயன்படுத்தும் தளத்திலேயே நேரடி தகவல்கள்.')}
           </h2>
           <p className="text-base sm:text-lg text-[#69786E] leading-relaxed">
-            Never miss a price window or harvest opportunity. FARMERS AI delivers concise, opt-in WhatsApp updates with verified buyer tenders and market advisories.
+            {t(
+              'alert_subtitle',
+              'Never miss a price window or harvest opportunity. FARMERS AI delivers concise, opt-in WhatsApp updates with verified buyer tenders and market advisories.',
+              'சந்தை விலை மற்றும் வாங்குபவர்களின் கொள்முதல் விவரங்களை வாட்ஸ்அப் மூலம் உடனடியாகப் பெறுங்கள்.'
+            )}
           </p>
         </div>
 
@@ -99,10 +105,10 @@ export const SmartAlertsSection: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-[#17251D] font-serif">
-                  Customize Your Alert Preferences
+                  {t('alert_pref_title', 'Customize Your Alert Preferences', 'அறிவிப்பு விருப்பங்களைத் தேர்ந்தெடுக்கவும்')}
                 </h3>
                 <span className="text-xs text-[#69786E]">
-                  Strictly opt-in · Zero promotional spam policy
+                  {t('alert_optin_note', 'Strictly opt-in · Zero promotional spam policy', 'விவசாயிகள் அனுமதித்தால் மட்டுமே அனுப்பப்படும் · தேவையற்ற விளம்பரங்கள் இல்லை')}
                 </span>
               </div>
             </div>
@@ -142,9 +148,9 @@ export const SmartAlertsSection: React.FC = () => {
             <form onSubmit={handleSimulate} className="bg-[#F7F6EF] p-5 rounded-2xl border border-gray-200">
               <div className="flex items-center justify-between mb-2">
                 <label htmlFor="phone-input" className="text-xs font-bold text-[#17251D]">
-                  Test WhatsApp Simulation on Demo Phone
+                  {t('alert_test_label', 'Test WhatsApp Simulation on Demo Phone', 'மாதிரி தொலைபேசியில் சோதிக்கவும்')}
                 </label>
-                <span className="text-[11px] text-[#69786E]">Demo Mode Only</span>
+                <span className="text-[11px] text-[#69786E]">{t('alert_demo_only', 'Demo Mode Only', 'டெமோ முறை மட்டுமே')}</span>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
@@ -156,7 +162,7 @@ export const SmartAlertsSection: React.FC = () => {
                     required
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="Enter mobile (e.g. +91 98450 12345)"
+                    placeholder={t('alert_phone_placeholder', 'Enter mobile (e.g. +91 98450 12345)', 'மொபைல் எண் (எ.கா. +91 98450 12345)')}
                     className="w-full bg-white border border-gray-300 rounded-xl pl-9 pr-3 py-2.5 text-xs font-mono text-[#17251D] focus:outline-none focus:ring-2 focus:ring-[#1B5E20]"
                   />
                 </div>
@@ -165,7 +171,7 @@ export const SmartAlertsSection: React.FC = () => {
                   className="px-5 py-2.5 bg-[#143D2B] hover:bg-[#1B5E20] text-white text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer shrink-0"
                 >
                   <Send className="w-3.5 h-3.5 text-[#F2C14E]" />
-                  <span>Preview Alert</span>
+                  <span>{t('alert_btn_preview', 'Preview Alert', 'செய்தியைப் பார்')}</span>
                 </button>
               </div>
 
@@ -173,7 +179,7 @@ export const SmartAlertsSection: React.FC = () => {
                 <div className="mt-3 p-2.5 bg-[#DDF3E4] rounded-lg border border-[#1B5E20]/30 text-xs text-[#143D2B] flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#1B5E20] shrink-0" />
                   <span>
-                    Simulated dispatch triggered! See the phone preview mockup on the right.
+                    {t('alert_simulated_success', 'Simulated dispatch triggered! See the phone preview mockup on the right.', 'மாதிரி செய்தி அனுப்பப்பட்டது! வலதுபுறத்தில் உள்ள மொபைல் திரையில் பார்க்கவும்.')}
                   </span>
                 </div>
               )}
@@ -200,7 +206,7 @@ export const SmartAlertsSection: React.FC = () => {
                       <ShieldCheck className="w-3.5 h-3.5 text-[#4CAF50]" />
                     </div>
                     <span className="text-[10px] text-white/80 block">
-                      Official Agriculture Intelligence
+                      {t('alert_official_badge', 'Official Agriculture Intelligence', 'அதிகாரப்பூர்வ வேளாண் தகவல்')}
                     </span>
                   </div>
                 </div>
@@ -216,48 +222,48 @@ export const SmartAlertsSection: React.FC = () => {
                   {/* Incoming WhatsApp Bubble */}
                   <div className="bg-white p-3.5 rounded-2xl rounded-tl-none shadow-xs border border-gray-200/50 max-w-[92%]">
                     <div className="text-[11px] font-bold text-[#075E54] mb-1 flex items-center justify-between">
-                      <span>🌾 FARMERS AI — Market Update</span>
+                      <span>{t('alert_bubble_title', '🌾 FARMERS AI — Market Update', '🌾 FARMERS AI — சந்தை நிலவரம்')}</span>
                       <span className="text-[9px] text-gray-400">09:31 AM</span>
                     </div>
 
                     <p className="text-xs text-gray-800 leading-relaxed mb-2.5">
-                      A new market update is available for your registered crop: <strong className="text-[#143D2B]">Paddy (BPT 5204)</strong>.
+                      {t('alert_bubble_p1', 'A new market update is available for your registered crop: Paddy (BPT 5204).', 'உங்கள் பயிரான நெல் (BPT 5204) க்கான புதிய சந்தை விலை வந்துள்ளது.')}
                     </p>
 
                     <div className="bg-[#F7F6EF] p-2 rounded-lg border border-gray-200 mb-2.5 space-y-1 text-[11px]">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Kurnool Spot:</span>
+                        <span className="text-gray-600">{t('alert_kurnool_spot', 'Kurnool Spot:', 'கர்னூல் சந்தை விலை:')}</span>
                         <span className="font-bold font-mono text-[#143D2B]">₹2,350 / qtl (▲ +1.8%)</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Top Verified Offer:</span>
+                        <span className="text-gray-600">{t('alert_top_offer', 'Top Verified Offer:', 'உயர்ந்த கொள்முதல் விலை:')}</span>
                         <span className="font-bold font-mono text-[#1B5E20]">₹2,470 / qtl</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Buyer:</span>
+                        <span className="text-gray-600">{t('alert_buyer_lbl', 'Buyer:', 'வாங்குபவர்:')}</span>
                         <span className="text-gray-800 truncate max-w-[130px]">Krishna Agri Exports</span>
                       </div>
                     </div>
 
                     <p className="text-[11px] text-gray-700 leading-snug mb-3">
-                      Compare current buyer offers, recent price trends, and estimated selling costs before deciding when to sell.
+                      {t('alert_bubble_p2', 'Compare current buyer offers, recent price trends, and estimated selling costs before deciding when to sell.', 'விற்பனை முடிவெடுப்பதற்கு முன் சந்தை விலை மற்றும் செலவுகளை கணக்கிடுங்கள்.')}
                     </p>
 
                     <a
                       href="#market-dashboard"
                       className="block text-center py-1.5 bg-[#25D366] text-white font-bold rounded-lg text-xs shadow-xs"
                     >
-                      Open FARMERS AI
+                      {t('alert_open_btn', 'Open FARMERS AI', 'FARMERS AI திறக்கவும்')}
                     </a>
                   </div>
 
                   {/* Second Bubble for Practice Points */}
                   <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-xs border border-gray-200/50 max-w-[92%]">
                     <div className="text-[11px] font-bold text-[#1B5E20] mb-1">
-                      ⭐ Stewardship Verified
+                      {t('alert_stewardship_bubble', '⭐ Stewardship Verified', '⭐ நற்செயல் சரிபார்க்கப்பட்டது')}
                     </div>
                     <p className="text-[11px] text-gray-800 leading-snug">
-                      Soil test documentation verified (+20 pts). Your Crop Practice Score is now <strong>85/100</strong>.
+                      {t('alert_stewardship_msg', 'Soil test documentation verified (+20 pts). Your Crop Practice Score is now 85/100.', 'மண் பரிசோதனை சான்று சரிபார்க்கப்பட்டது (+20 புள்ளிகள்). உங்கள் பயிர் மதிப்பெண் 85/100.')}
                     </p>
                     <span className="text-[9px] text-gray-400 block text-right mt-1">11:15 AM</span>
                   </div>
@@ -266,7 +272,7 @@ export const SmartAlertsSection: React.FC = () => {
                 {/* WhatsApp Chat Footer Mock */}
                 <div className="bg-[#F0F2F5] p-2 flex items-center gap-2 border-t border-gray-200">
                   <div className="flex-1 bg-white rounded-full px-3 py-1.5 text-xs text-gray-400 border border-gray-200">
-                    Type a message...
+                    {t('alert_type_msg', 'Type a message...', 'செய்தியை தட்டச்சு செய்யவும்...')}
                   </div>
                   <div className="w-8 h-8 rounded-full bg-[#075E54] flex items-center justify-center text-white">
                     <Send className="w-3.5 h-3.5" />
@@ -279,7 +285,7 @@ export const SmartAlertsSection: React.FC = () => {
 
         {/* Integration Architecture Disclaimer */}
         <div className="mt-12 text-center text-xs text-[#69786E] max-w-2xl mx-auto">
-          Architecture configured for Twilio WhatsApp Business API integration. Real automated dispatch activates when production API keys and registered sender templates are configured on the backend.
+          {t('alert_arch_disclaimer', 'Architecture configured for Twilio WhatsApp Business API integration. Real automated dispatch activates when production API keys and registered sender templates are configured on the backend.', 'Twilio வாட்ஸ்அப் தொழில்நுட்பத்துடன் இணைக்க வடிவமைக்கப்பட்டுள்ளது. நேரலை சேவையகத்தில் செயல்படுத்தப்படும்.')}
         </div>
       </div>
     </section>

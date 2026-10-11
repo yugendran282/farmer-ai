@@ -1,7 +1,33 @@
 import React from 'react';
-import { HeartHandshake, Eye, TrendingUp, Users, ShieldCheck, Sprout } from 'lucide-react';
+import { Eye, TrendingUp, Users, Sprout } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const StorytellingSection: React.FC = () => {
+  const { t } = useLanguage();
+
+  const commitments = [
+    {
+      icon: Eye,
+      title: t('story_c1_t', 'Eliminate Hidden Costs', 'மறைமுக செலவுகளை நீக்குதல்'),
+      desc: t('story_c1_d', 'Transparent accounting of mandi cess, transport freight, and bags so farmers know their real take-home net return before loading trucks.', 'சந்தை வரிகள், போக்குவரத்து கட்டணங்களை வெளிப்படையாகக் காட்டி உண்மையான வருமானத்தை அறிய உதவுதல்.'),
+    },
+    {
+      icon: TrendingUp,
+      title: t('story_c2_t', 'Empower Timing Decisions', 'சரியான விற்பனை நேரம்'),
+      desc: t('story_c2_d', 'Actionable data comparing storage holding expenses against historical post-harvest price trends.', 'சேமிப்பு செலவுகளையும் சந்தை விலை உயர்வையும் ஒப்பிட்டு சரியான நேரத்தில் விற்க உதவுதல்.'),
+    },
+    {
+      icon: Sprout,
+      title: t('story_c3_t', 'Reward Stewardship', 'இயற்கை நற்செயலுக்கு வெகுமதி'),
+      desc: t('story_c3_d', 'Recognize farmers who invest in soil health and water conservation by linking verifiable records to buyer incentive programs.', 'மண் மற்றும் நீர் வளம் காக்கும் விவசாயிகளுக்கு கூடுதல் ஊக்கத்தொகை பெற்றுத் தருதல்.'),
+    },
+    {
+      icon: Users,
+      title: t('story_c4_t', 'Preserve Independence', 'நடுநிலை வழிகாட்டல்'),
+      desc: t('story_c4_d', 'Strictly neutral agricultural advice where paid dealer advertisements are clearly quarantined from agronomic recommendations.', 'விளம்பரங்களால் பாதிக்கப்படாத, விவசாயிகளுக்கான நடுநிலையான பயிர் ஆலோசனைகள்.'),
+    },
+  ];
+
   return (
     <section className="py-20 lg:py-28 bg-[#143D2B] text-white relative overflow-hidden">
       {/* Ambient background glows */}
@@ -13,18 +39,26 @@ export const StorytellingSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
           <div className="lg:col-span-7">
             <div className="flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#F2C14E] mb-3">
-              <span>Human-Centered Agriculture</span>
+              <span>{t('story_eyebrow1', 'Human-Centered Agriculture', 'மனிதநேய வேளாண்மை')}</span>
               <span aria-hidden="true">·</span>
-              <span>Our Foundational Purpose</span>
+              <span>{t('story_eyebrow2', 'Our Foundational Purpose', 'எங்கள் அடிப்படை நோக்கம்')}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white font-serif leading-[1.18] mb-6 text-balance">
-              Technology Should Reach the People Who Grow Our Food.
+              {t('story_title', 'Technology Should Reach the People Who Grow Our Food.', 'உணவு தரும் விவசாயிகளை தொழில்நுட்பம் சென்றடைய வேண்டும்.')}
             </h2>
             <p className="text-base sm:text-lg text-white/80 leading-relaxed mb-6">
-              For generations, smallholder farmers have operated in information asymmetry — selling under distress when middlemen arrive, lacking transparent freight costs, and rarely receiving premiums for soil and water stewardship.
+              {t(
+                'story_p1',
+                'For generations, smallholder farmers have operated in information asymmetry — selling under distress when middlemen arrive, lacking transparent freight costs, and rarely receiving premiums for soil and water stewardship.',
+                'விவசாயிகள் இடைத்தரகர்களிடம் குறைந்த விலைக்கு விற்பதைத் தடுத்து, வெளிப்படையான சந்தை மற்றும் போக்குவரத்து செலவுகளை அறிய வைப்பதே எங்கள் நோக்கம்.'
+              )}
             </p>
             <p className="text-sm sm:text-base text-white/70 leading-relaxed">
-              FARMERS AI exists to invert that dynamic. By putting transparent market intelligence, verified direct buyer access, and digital practice records directly in the farmer’s hands, we empower agricultural communities to capture fair value for their labor.
+              {t(
+                'story_p2',
+                'FARMERS AI exists to invert that dynamic. By putting transparent market intelligence, verified direct buyer access, and digital practice records directly in the farmer’s hands, we empower agricultural communities to capture fair value for their labor.',
+                'நேரடி சந்தை அறிவு, சரிபார்க்கப்பட்ட வியாபாரிகள் மற்றும் டிஜிட்டல் பதிவுகளை விவசாயிகளின் கைகளில் வழங்குவதன் மூலம் உழைப்பிற்கு ஏற்ற நியாயமான விலையைப் பெற உதவுகிறோம்.'
+              )}
             </p>
           </div>
 
@@ -43,7 +77,7 @@ export const StorytellingSection: React.FC = () => {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                  <span className="text-[11px] font-medium text-white/90">Field Stewardship</span>
+                  <span className="text-[11px] font-medium text-white/90">{t('story_photo1', 'Field Stewardship', 'நிலப் பராமரிப்பு')}</span>
                 </div>
               </div>
 
@@ -59,7 +93,7 @@ export const StorytellingSection: React.FC = () => {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                  <span className="text-[11px] font-medium text-white/90">Harvest Realization</span>
+                  <span className="text-[11px] font-medium text-white/90">{t('story_photo2', 'Harvest Realization', 'அறுவடை பலன்')}</span>
                 </div>
               </div>
             </div>
@@ -77,7 +111,7 @@ export const StorytellingSection: React.FC = () => {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                  <span className="text-[11px] font-medium text-white/90">Digital Connectivity</span>
+                  <span className="text-[11px] font-medium text-white/90">{t('story_photo3', 'Digital Connectivity', 'டிஜிட்டல் இணைப்பு')}</span>
                 </div>
               </div>
 
@@ -93,7 +127,7 @@ export const StorytellingSection: React.FC = () => {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
-                  <span className="text-[11px] font-medium text-white/90">Farming Families</span>
+                  <span className="text-[11px] font-medium text-white/90">{t('story_photo4', 'Farming Families', 'விவசாயக் குடும்பங்கள்')}</span>
                 </div>
               </div>
             </div>
@@ -102,28 +136,7 @@ export const StorytellingSection: React.FC = () => {
 
         {/* 4 Core Human Commitments */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pt-10 border-t border-white/10">
-          {[
-            {
-              icon: Eye,
-              title: 'Eliminate Hidden Costs',
-              desc: 'Transparent accounting of mandi cess, transport freight, and bags so farmers know their real take-home net return before loading trucks.',
-            },
-            {
-              icon: TrendingUp,
-              title: 'Empower Timing Decisions',
-              desc: 'Actionable data comparing storage holding expenses against historical post-harvest price trends.',
-            },
-            {
-              icon: Sprout,
-              title: 'Reward Stewardship',
-              desc: 'Recognize farmers who invest in soil health and water conservation by linking verifiable records to buyer incentive programs.',
-            },
-            {
-              icon: Users,
-              title: 'Preserve Independence',
-              desc: 'Strictly neutral agricultural advice where paid dealer advertisements are clearly quarantined from agronomic recommendations.',
-            },
-          ].map((item, idx) => {
+          {commitments.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-6">
@@ -143,7 +156,7 @@ export const StorytellingSection: React.FC = () => {
 
         {/* Responsible Metrics Notice */}
         <div className="mt-12 text-center text-[11px] text-white/50">
-          Illustrative product narrative · Real pilot testimonials and impact assessments will be published post-harvest trials with verified farmer authorization.
+          {t('story_narrative_note', 'Illustrative product narrative · Real pilot testimonials and impact assessments will be published post-harvest trials with verified farmer authorization.', 'விவசாயிகளின் நலனுக்காக அர்ப்பணிக்கப்பட்ட மாதிரி தளம்.')}
         </div>
       </div>
     </section>

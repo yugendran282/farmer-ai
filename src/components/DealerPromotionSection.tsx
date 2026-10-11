@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ShieldAlert,
   CheckCircle2,
@@ -10,12 +10,15 @@ import {
   Building2,
   Sparkles
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface DealerPromotionProps {
   onPartnerClick: (tierName: string) => void;
 }
 
 export const DealerPromotionSection: React.FC<DealerPromotionProps> = ({ onPartnerClick }) => {
+  const { t } = useLanguage();
+
   const tiers = [
     {
       name: 'Local Dealer Starter',
@@ -74,15 +77,19 @@ export const DealerPromotionSection: React.FC<DealerPromotionProps> = ({ onPartn
         {/* Section Heading */}
         <div className="max-w-3xl mb-14">
           <div className="flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-[#1B5E20] mb-3">
-            <span>B2B Commercial Outreach</span>
+            <span>{t('dealer_eyebrow1', 'B2B Commercial Outreach', 'வணிகத் தொடர்பு')}</span>
             <span aria-hidden="true">·</span>
-            <span>Input Dealers & Fertilizer Brands</span>
+            <span>{t('dealer_eyebrow2', 'Input Dealers & Fertilizer Brands', 'இடுபொருள் வியாபாரிகள் & பிராண்டுகள்')}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#17251D] font-serif leading-[1.18] mb-4 text-balance">
-            Connect Your Business With the Right Farming Communities.
+            {t('dealer_title', 'Connect Your Business With the Right Farming Communities.', 'உங்கள் வணிகத்தை விவசாயிகளுடன் இணைக்கவும்.')}
           </h2>
           <p className="text-base sm:text-lg text-[#69786E] leading-relaxed">
-            FARMERS AI helps agricultural input businesses improve discoverability, share relevant seasonal solutions, and understand regional demand through transparent, compliant campaigns.
+            {t(
+              'dealer_subtitle',
+              'FARMERS AI helps agricultural input businesses improve discoverability, share relevant seasonal solutions, and understand regional demand through transparent, compliant campaigns.',
+              'பருவகால தீர்வுகள் மற்றும் தயாரிப்புகளை விவசாயிகளிடம் கொண்டு சேர்க்க வெளிப்படையான திட்டங்கள்.'
+            )}
           </p>
         </div>
 
@@ -128,7 +135,7 @@ export const DealerPromotionSection: React.FC<DealerPromotionProps> = ({ onPartn
                     </span>
                   </div>
                   <span className={`text-[11px] block mt-1 ${tier.featured ? 'text-white/60' : 'text-[#69786E]'}`}>
-                    Sample demonstration pricing
+                    {t('dealer_sample_pricing', 'Sample demonstration pricing', 'மாதிரி விலை விவரம்')}
                   </span>
                 </div>
 
@@ -175,20 +182,24 @@ export const DealerPromotionSection: React.FC<DealerPromotionProps> = ({ onPartn
               </div>
               <div>
                 <div className="text-xs uppercase tracking-widest text-[#F2C14E] font-bold mb-1">
-                  Non-Negotiable Editorial Independence
+                  {t('dealer_trust_badge', 'Non-Negotiable Editorial Independence', 'சுயாதீன கொள்கை')}
                 </div>
                 <h3 className="text-xl sm:text-2xl font-bold font-serif text-white mb-2">
-                  The FARMERS AI Trust Policy
+                  {t('dealer_trust_title', 'The FARMERS AI Trust Policy', 'FARMERS AI நம்பகத்தன்மை கொள்கை')}
                 </h3>
                 <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
-                  All sponsored promotions on FARMERS AI are clearly labelled. Crucially, commercial sponsorships and advertising campaigns <strong className="text-white">never influence</strong> objective crop-health assessments, practice scores, independent APMC price comparisons, or agronomically appropriate farm guidance. A brand is never recommended simply because it pays to advertise.
+                  {t(
+                    'dealer_trust_desc',
+                    'All sponsored promotions on FARMERS AI are clearly labelled. Crucially, commercial sponsorships and advertising campaigns never influence objective crop-health assessments, practice scores, independent APMC price comparisons, or agronomically appropriate farm guidance. A brand is never recommended simply because it pays to advertise.',
+                    'அனைத்து விளம்பரங்களும் தெளிவாகக் குறிப்பிடப்படும். விளம்பரங்கள் ஒருபோதும் நடுநிலையான பயிர் பரிந்துரையையோ சந்தை விலையையோ மாற்றாது.'
+                  )}
                 </p>
               </div>
             </div>
 
             <div className="shrink-0 bg-white/10 p-4 rounded-2xl border border-white/15 text-xs text-white/90 max-w-xs">
-              <span className="font-bold text-[#F2C14E] block mb-1">Our Core Commitment:</span>
-              "Farmers trust us for unbiased data. We protect that trust above all commercial arrangements."
+              <span className="font-bold text-[#F2C14E] block mb-1">{t('dealer_commitment_title', 'Our Core Commitment:', 'எங்கள் முதன்மை உறுதிமொழி:')}</span>
+              {t('dealer_commitment_quote', '"Farmers trust us for unbiased data. We protect that trust above all commercial arrangements."', '"விவசாயிகள் எங்கள் நடுநிலையான தரவை நம்புகிறார்கள். அந்த நம்பிக்கையை எப்போதும் பாதுகாப்போம்."')}
             </div>
           </div>
         </div>
